@@ -3,7 +3,7 @@ import '../modules/auth/pages/login_page.dart';
 import '../modules/home/pages/home_page.dart';
 import '../modules/profile/pages/profile_page.dart';
 import '../modules/favorite/pages/favorite_page.dart';
-import '../modules/my_trip/pages/my_trip_page.dart';
+import '../modules/my_kos/pages/my_kos_page.dart';
 
 class AppRoutes {
   static const String home = '/';

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../pages/login_page.dart';
 import '../widgets/input_field.dart';
 import '../widgets/auth_button.dart';
 
@@ -15,10 +14,11 @@ class SignUpScreen extends StatelessWidget {
     String email,
     String password,
   ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final navigator = Navigator.of(context);
+
     if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Semua field harus diisi')));
+      messenger.showSnackBar(const SnackBar(content: Text('Semua field harus diisi')));
       return;
     }
 
@@ -35,29 +35,27 @@ class SignUpScreen extends StatelessWidget {
 
       final data = jsonDecode(response.body);
       if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(
             content: Text('Akun berhasil dibuat'),
           ),
         );
-      Navigator.pushReplacementNamed(context, '/login');
+        navigator.pushReplacementNamed('/login');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           SnackBar(content: Text(data['message'] ?? 'Gagal membuat akun')),
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Terjadi kesalahan: $e')));
+      messenger.showSnackBar(SnackBar(content: Text('Terjadi kesalahan: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final FullNameController = TextEditingController();
-    final EmailController = TextEditingController();
-    final PasswordController = TextEditingController();
+  final fullNameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
@@ -79,14 +77,14 @@ class SignUpScreen extends StatelessWidget {
                 const SizedBox(height: 32),
                 InputField(
                   hintText: 'Full name',
-                  controller: FullNameController,
+                  controller: fullNameController,
                 ),
                 const SizedBox(height: 16),
-                InputField(hintText: 'Email', controller: EmailController),
+                InputField(hintText: 'Email', controller: emailController),
                 const SizedBox(height: 16),
                 InputField(
                   hintText: 'Password',
-                  controller: PasswordController,
+                  controller: passwordController,
                   obscureText: true,
                 ),
                 const SizedBox(height: 24),
@@ -121,9 +119,9 @@ class SignUpScreen extends StatelessWidget {
                   child: AuthButton(
                     text: 'Create Account',
                     onPressed: () {
-                      final fullName = FullNameController.text.trim();
-                      final email = EmailController.text.trim();
-                      final password = PasswordController.text.trim();
+                      final fullName = fullNameController.text.trim();
+                      final email = emailController.text.trim();
+                      final password = passwordController.text.trim();
                       registerUser(context, fullName, email, password);
                     }
                   ),

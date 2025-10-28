@@ -1,21 +1,18 @@
-// [ FILE: favorite_page.dart ]
-// Salin dan ganti seluruh kode di file Anda dengan ini.
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; 
+import 'package:get/get.dart';
 import '../../../modules/home/widgets/bottom_navbar.dart';
 import '../../../modules/home/pages/home_page.dart';
-import '../../../modules/my_trip/pages/my_trip_page.dart';
+import '../../my_kos/pages/my_kos_page.dart';
 import '../../../modules/profile/pages/profile_page.dart';
 import '../../../modules/home/widgets/nearby_property_card.dart';
-import '../../../data/models/favorite_controller.dart'; 
+import '../../../data/models/favorite_controller.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final FavoriteController controller = Get.put(FavoriteController());
+  Get.put(FavoriteController());
 
     return Scaffold(
       appBar: AppBar(
@@ -48,6 +45,7 @@ class FavoritePage extends StatelessWidget {
                   title: hotel.name,
                   location: hotel.location,
                   price: "Rp ${hotel.price}",
+                  rating: hotel.rating,
                   isFavorite: true, 
                   onFavoriteToggle: () {
                     controller.toggleFavorite(hotel); 

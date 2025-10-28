@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../modules/auth/pages/request_sent_page.dart';
 import '../widgets/auth_button.dart';
-import '../pages/login_page.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
   const ForgetPasswordScreen({super.key});

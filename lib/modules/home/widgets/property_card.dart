@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '.././../../config/theme.dart';
 
 class PropertyCard extends StatelessWidget {
   final String propertyId;
@@ -6,21 +7,21 @@ class PropertyCard extends StatelessWidget {
   final String title;
   final String location;
   final String price;
-  final String priceRange;
+  final double rating; 
   final bool isFavorite;
   final VoidCallback onFavoriteToggle;
 
   const PropertyCard({
-    Key? key,
+    super.key,
     required this.propertyId,
     required this.imageUrl,
     required this.title,
     required this.location,
     required this.price,
-    required this.priceRange,
+    required this.rating, 
     required this.isFavorite,
     required this.onFavoriteToggle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,12 +30,12 @@ class PropertyCard extends StatelessWidget {
       margin: const EdgeInsets.only(right: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 3),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -45,7 +46,7 @@ class PropertyCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
+                  top: Radius.circular(12),
                 ),
                 child: Image.network(
                   imageUrl,
@@ -78,13 +79,20 @@ class PropertyCard extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    priceRange,
-                    style: const TextStyle(
-                      fontSize: 8,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black87,
-                    ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min, 
+                    children: [
+                      const Icon(Icons.star, color: Colors.amber, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        rating.toString(),
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -109,14 +117,14 @@ class PropertyCard extends StatelessWidget {
                     const Icon(
                       Icons.location_on,
                       size: 12,
-                      color: Color(0xFFFF5252),
+                      color: travelokaMediumGray,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       location,
                       style: const TextStyle(
                         fontSize: 11,
-                        color: Colors.grey,
+                        color: travelokaMediumGray,
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -135,7 +143,7 @@ class PropertyCard extends StatelessWidget {
                             'Start from',
                             style: TextStyle(
                               fontSize: 9,
-                              color: Colors.grey,
+                              color: travelokaMediumGray,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
@@ -143,8 +151,8 @@ class PropertyCard extends StatelessWidget {
                             '$price/month',
                             style: const TextStyle(
                               fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
+                              fontWeight: FontWeight.w700,
+                              color: travelokaPriceRed,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -155,7 +163,7 @@ class PropertyCard extends StatelessWidget {
                       onTap: onFavoriteToggle,
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: const Color(0xFFFF5252),
+                        color: travelokaBlue,
                         size: 20,
                       ),
                     ),

@@ -20,8 +20,11 @@ class LoginScreen extends StatelessWidget {
       String email,
       String password,
     ) async {
+      final messenger = ScaffoldMessenger.of(context);
+      final navigator = Navigator.of(context);
+
       if (email.isEmpty || password.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        messenger.showSnackBar(
           const SnackBar(
             content: Text('Email dan password tidak boleh kosong'),
           ),
@@ -39,21 +42,19 @@ class LoginScreen extends StatelessWidget {
         final data = jsonDecode(response.body);
 
         if (response.statusCode == 200) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(
               content: Text('Login berhasil: ${data['data']['full_name']}'),
             ),
           );
-          Navigator.pushReplacementNamed(context, '/');
+          navigator.pushReplacementNamed('/');
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
+          messenger.showSnackBar(
             SnackBar(content: Text(data['message'] ?? 'Login gagal')),
           );
         }
       } catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Terjadi kesalahan: $e')));
+        messenger.showSnackBar(SnackBar(content: Text('Terjadi kesalahan: $e')));
       }
     }
 

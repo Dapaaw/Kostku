@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/hotel_model.dart';
+import '../../../data/models/kos_model.dart';
 
 class FavoriteCard extends StatelessWidget {
-  final HotelModel hotel;
+  final KosModel hotel;
 
   const FavoriteCard({super.key, required this.hotel});
 

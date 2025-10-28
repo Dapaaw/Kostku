@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
       title: 'Travel App',
       debugShowCheckedModeBanner: false,
       theme: appTheme,
-      initialRoute: AppRoutes.favorite,
+      initialRoute: AppRoutes.home,
       routes: AppRoutes.routes,
     );
   }

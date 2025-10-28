@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import '../../../config/theme.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onTap;
 
   const BottomNavBar({
-    Key? key,
+    super.key,
     required this.selectedIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +28,8 @@ class BottomNavBar extends StatelessWidget {
         onTap: onTap, 
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.grey[400],
+        selectedItemColor: travelokaBlue,
+        unselectedItemColor: travelokaMediumGray,
         selectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 12,
@@ -45,9 +46,9 @@ class BottomNavBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.confirmation_number_outlined),
-            activeIcon: Icon(Icons.confirmation_number),
-            label: 'My Trip',
+            icon: Icon(Icons.cases_outlined),
+            activeIcon: Icon(Icons.cases_rounded),
+            label: 'My Kos',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bookmark_border),

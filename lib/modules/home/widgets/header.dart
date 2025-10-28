@@ -1,9 +1,8 @@
-// Lokasi file: modules/home/widgets/home_header.dart
-
 import 'package:flutter/material.dart';
+import '../../../config/theme.dart';
 
 class HomeHeader extends StatelessWidget {
-  const HomeHeader({Key? key}) : super(key: key);
+  const HomeHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class HomeHeader extends StatelessWidget {
                   'Hello there',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey,
+                    color: travelokaMediumGray,
                     fontWeight: FontWeight.w400,
                   ),
                 ),

@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:hotel/data/models/hotel_model.dart'; 
+import 'package:hotel/data/models/kos_model.dart'; 
 
 class FavoriteController extends GetxController {
-  List<HotelModel> favoriteList = [];
+  List<KosModel> favoriteList = [];
 
-  void toggleFavorite(HotelModel hotel) {
+  void toggleFavorite(KosModel hotel) {
     if (isFavorite(hotel.id)) {
       favoriteList.removeWhere((item) => item.id == hotel.id);
     } else {

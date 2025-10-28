@@ -1,6 +1,5 @@
-// Lokasi file: modules/home/widgets/top_nearby_header.dart
-
 import 'package:flutter/material.dart';
+import '../../../config/theme.dart';
 
 class TopNearbyHeader extends StatelessWidget {
   final List<String> locations;
@@ -8,11 +7,11 @@ class TopNearbyHeader extends StatelessWidget {
   final Function(String?) onLocationChanged;
 
   const TopNearbyHeader({
-    Key? key,
+    super.key,
     required this.locations,
     required this.selectedLocation,
     required this.onLocationChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +25,7 @@ class TopNearbyHeader extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00C853),
+                  color: travelokaBlue,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Icon(Icons.near_me, color: Colors.white, size: 18),
@@ -51,7 +50,7 @@ class TopNearbyHeader extends StatelessWidget {
                     'Location',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey,
+                      color: travelokaMediumGray,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
