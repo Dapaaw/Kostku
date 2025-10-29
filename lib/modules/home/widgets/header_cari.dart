@@ -1,8 +1,5 @@
-// [ FILE: home/widgets/header_cari.dart ]
-// Salin dan ganti seluruh kode di file Anda dengan ini.
-
 import 'package:flutter/material.dart';
-import 'package:hotel/config/theme.dart'; // Pastikan theme di-import
+import '../../../config/theme.dart'; 
 
 class SearchAndFilterSection extends StatelessWidget {
   final List<String> priceRanges;
@@ -22,7 +19,6 @@ class SearchAndFilterSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Search Bar
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Container(
@@ -68,18 +64,16 @@ class SearchAndFilterSection extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // --- PERUBAHAN DIMULAI DI SINI ---
-              // Teks 'Price' kita bungkus dengan Row
               Row(
                 children: [
                   Container(
                     padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
-                      color: travelokaBlue, // Menggunakan warna dari theme
+                      color: travelokaBlue, 
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
-                      Icons.attach_money, // Ganti ikon ini jika mau
+                      Icons.attach_money, 
                       color: Colors.white,
                       size: 18,
                     ),
@@ -95,7 +89,6 @@ class SearchAndFilterSection extends StatelessWidget {
                   ),
                 ],
               ),
-              // --- PERUBAHAN SELESAI ---
 
               TextButton(
                 onPressed: onSeeAllPressed,
@@ -117,7 +110,6 @@ class SearchAndFilterSection extends StatelessWidget {
 
         const SizedBox(height: 8),
 
-        // Price Range Buttons
         SizedBox(
           height: 36,
           child: ListView.builder(

@@ -57,7 +57,6 @@ class TopNearbyHeader extends StatelessWidget {
                 ],
               ),
               const SizedBox(width: 4),
-              // Dropdown Location
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
@@ -68,7 +67,7 @@ class TopNearbyHeader extends StatelessWidget {
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value:
-                        selectedLocation, // Menggunakan data dari constructor
+                        selectedLocation,
                     icon: const Icon(
                       Icons.arrow_drop_down,
                       size: 15,
@@ -81,13 +80,12 @@ class TopNearbyHeader extends StatelessWidget {
                       fontFamily: 'Poppins',
                     ),
                     items: locations.map((String location) {
-                      // Menggunakan data dari constructor
                       return DropdownMenuItem<String>(
                         value: location,
                         child: Text(location),
                       );
                     }).toList(),
-                    onChanged: onLocationChanged, // Menggunakan callback
+                    onChanged: onLocationChanged, 
                   ),
                 ),
               ),

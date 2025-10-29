@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:hotel/modules/my_kos/pages/my_kos_page.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../../data/models/kos_model.dart';
 import '../../../data/models/my_kos_controller.dart';
-import 'package:get/get.dart';
+import '../../my_kos/pages/my_kos_page.dart';
 
 class PropertyDetailPage extends StatelessWidget {
   final KosModel property;
@@ -111,12 +111,12 @@ class PropertyDetailPage extends StatelessWidget {
                           ),
                           _buildStatItem(
                             Icons.bathtub_outlined,
-                            '${property.bathrooms} Baths',
+                            '${property.bathrooms} Baths', 
                             kLightGreyColor,
                           ),
                           _buildStatItem(
-                            Icons.straighten_outlined,
-                            '${property.kitchen} Kitchens',
+                            Icons.kitchen_outlined, 
+                            '${property.kitchen} Kitchen', 
                             kLightGreyColor,
                           ),
                         ],
@@ -149,15 +149,18 @@ class PropertyDetailPage extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () {
                             final myKosController = Get.put(MyKosController());
+
                             myKosController.addMyKos(property);
+
                             Get.snackbar(
                               'Success',
-                              '${property.name}telah ditambahkan ke daftar kos Anda.',
+                              '${property.name} telah ditambahkan ke daftar kos Anda.', 
                               snackPosition: SnackPosition.BOTTOM,
                               backgroundColor: Colors.green[400],
                               colorText: Colors.white,
                               margin: const EdgeInsets.all(16),
                             );
+
                             Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

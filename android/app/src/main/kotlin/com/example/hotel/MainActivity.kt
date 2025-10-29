@@ -1,4 +1,4 @@
-package com.example.hotel
+package com.example.kos
 
 import io.flutter.embedding.android.FlutterActivity
 

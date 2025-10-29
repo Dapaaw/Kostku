@@ -1,20 +1,20 @@
 import 'package:get/get.dart';
-import 'package:hotel/data/models/kos_model.dart'; 
+import '../models/kos_model.dart'; 
 
 class FavoriteController extends GetxController {
   List<KosModel> favoriteList = [];
 
-  void toggleFavorite(KosModel hotel) {
-    if (isFavorite(hotel.id)) {
-      favoriteList.removeWhere((item) => item.id == hotel.id);
+  void toggleFavorite(KosModel kos) {
+    if (isFavorite(kos.id)) {
+      favoriteList.removeWhere((item) => item.id == kos.id);
     } else {
-      favoriteList.add(hotel);
+      favoriteList.add(kos);
     }
     
     update(); 
   }
 
-  bool isFavorite(int hotelId) {
-    return favoriteList.any((item) => item.id == hotelId);
+  bool isFavorite(int kosId) {
+    return favoriteList.any((item) => item.id == kosId);
   }
 }

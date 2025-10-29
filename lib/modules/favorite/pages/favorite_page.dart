@@ -16,7 +16,7 @@ class FavoritePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorite Hotels'),
+        title: const Text('Favorite Kost'),
         centerTitle: true,
       ),
       body: GetBuilder<FavoriteController>(
@@ -35,20 +35,20 @@ class FavoritePage extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             itemCount: controller.favoriteList.length, 
             itemBuilder: (context, index) {
-              final hotel = controller.favoriteList[index]; 
+              final kos = controller.favoriteList[index]; 
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 16.0),
                 child: NearbyPropertyCard(
-                  propertyId: hotel.id.toString(),
-                  imageUrl: hotel.imageUrl,
-                  title: hotel.name,
-                  location: hotel.location,
-                  price: "Rp ${hotel.price}",
-                  rating: hotel.rating,
+                  propertyId: kos.id.toString(),
+                  imageUrl: kos.imageUrl,
+                  title: kos.name,
+                  location: kos.location,
+                  price: "Rp ${kos.price}",
+                  rating: kos.rating,
                   isFavorite: true, 
                   onFavoriteToggle: () {
-                    controller.toggleFavorite(hotel); 
+                    controller.toggleFavorite(kos); 
                   },
                 ),
               );
