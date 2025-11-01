@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme.dart';
+import '/config/theme.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key});

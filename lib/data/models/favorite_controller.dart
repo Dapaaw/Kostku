@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import '../models/kos_model.dart'; 
+import 'kos_model.dart';
 
 class FavoriteController extends GetxController {
   List<KosModel> favoriteList = [];
@@ -10,8 +10,8 @@ class FavoriteController extends GetxController {
     } else {
       favoriteList.add(kos);
     }
-    
-    update(); 
+
+    update();
   }
 
   bool isFavorite(int kosId) {

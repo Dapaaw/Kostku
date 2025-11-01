@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../modules/auth/pages/request_sent_page.dart';
+import '/modules/auth/pages/request_sent_page.dart';
 import '../widgets/auth_button.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {
@@ -33,7 +33,9 @@ class ForgetPasswordScreen extends StatelessWidget {
                     text: 'Send OTP',
                     onPressed: () => Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => const RequestSentPage()),
+                      MaterialPageRoute(
+                        builder: (_) => const RequestSentPage(),
+                      ),
                     ),
                   ),
                 ),

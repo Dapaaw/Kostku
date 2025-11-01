@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '.././../../config/theme.dart';
+import '/config/theme.dart';
 
 class PropertyCard extends StatelessWidget {
   final String propertyId;
@@ -7,7 +7,7 @@ class PropertyCard extends StatelessWidget {
   final String title;
   final String location;
   final String price;
-  final double rating; 
+  final double rating;
   final bool isFavorite;
   final VoidCallback onFavoriteToggle;
 
@@ -18,7 +18,7 @@ class PropertyCard extends StatelessWidget {
     required this.title,
     required this.location,
     required this.price,
-    required this.rating, 
+    required this.rating,
     required this.isFavorite,
     required this.onFavoriteToggle,
   });
@@ -80,7 +80,7 @@ class PropertyCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
-                    mainAxisSize: MainAxisSize.min, 
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.star, color: Colors.amber, size: 14),
                       const SizedBox(width: 4),

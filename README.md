@@ -87,10 +87,10 @@ Struktur folder utama aplikasi ini dibagi berdasarkan fitur (modul):
 1. Pastikan **Flutter SDK** sudah terpasang.
 2. Clone repositori:
    ```bash
-   git clone https://github.com/NAMA_ANDA/fliprate.git
+   git clone https://github.com/Dapaaw/Kostku.git
 3. Masuk ke direktori proyek:
    ```bash
-   cd fliprate
+   cd Kostku
 4. Ambil semua dependencies:
    ```bash
    flutter pub get

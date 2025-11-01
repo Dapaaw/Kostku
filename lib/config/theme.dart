@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 
 const Color travelokaBlue = Color(0xFF0064D2);
 const Color travelokaLightGray = Color(0xFFF8F9FA);
-const Color travelokaPriceRed = Color(0xFFFF5252); 
-const Color travelokaMediumGray = Color(0xFF6C757D); 
+const Color travelokaPriceRed = Color(0xFFFF5252);
+const Color travelokaMediumGray = Color(0xFF6C757D);
 
 final ThemeData appTheme = ThemeData(
   primaryColor: travelokaBlue,
-  scaffoldBackgroundColor: travelokaLightGray, 
+  scaffoldBackgroundColor: travelokaLightGray,
   fontFamily: 'Poppins',
   colorScheme: ColorScheme.fromSeed(
     seedColor: travelokaBlue,
@@ -17,10 +17,10 @@ final ThemeData appTheme = ThemeData(
   ),
 
   appBarTheme: const AppBarTheme(
-    backgroundColor: Colors.white, 
-    elevation: 0.5, 
+    backgroundColor: Colors.white,
+    elevation: 0.5,
     centerTitle: true,
-    iconTheme: IconThemeData(color: Colors.black87), 
+    iconTheme: IconThemeData(color: Colors.black87),
     titleTextStyle: TextStyle(
       color: Colors.black87,
       fontFamily: 'Poppins',
@@ -29,7 +29,7 @@ final ThemeData appTheme = ThemeData(
     ),
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark, 
+      statusBarIconBrightness: Brightness.dark,
     ),
   ),
 

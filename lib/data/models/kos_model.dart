@@ -41,7 +41,9 @@ class KosModel {
       bedrooms: json['bedrooms'] ?? 6,
       bathrooms: json['bathrooms'] ?? 2,
       kitchen: json['kitchen'] ?? 1,
-      description: json['description'] ?? 'Deskripsi lengkap untuk properti ini belum tersedia. Silakan hubungi pemilik untuk informasi lebih lanjut.',
+      description:
+          json['description'] ??
+          'Deskripsi lengkap untuk properti ini belum tersedia. Silakan hubungi pemilik untuk informasi lebih lanjut.',
     );
   }
 

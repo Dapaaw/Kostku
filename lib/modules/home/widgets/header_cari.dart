@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme.dart'; 
+import 'package:get/get.dart';
+import '/config/theme.dart';
+import '/data/models/kos_controller.dart';
 
 class SearchAndFilterSection extends StatelessWidget {
-  final List<String> priceRanges;
-  final String selectedPriceRange;
-  final Function(String) onPriceRangeSelected;
   final VoidCallback onSeeAllPressed;
 
-  const SearchAndFilterSection({
-    super.key,
-    required this.priceRanges,
-    required this.selectedPriceRange,
-    required this.onPriceRangeSelected,
-    required this.onSeeAllPressed,
-  });
+  const SearchAndFilterSection({super.key, required this.onSeeAllPressed});
 
   @override
   Widget build(BuildContext context) {
+    final KosController controller = Get.find<KosController>();
+
     return Column(
       children: [
         Padding(
@@ -35,12 +30,15 @@ class SearchAndFilterSection extends StatelessWidget {
               ],
             ),
             child: Row(
-              children: const [
-                Icon(Icons.search, color: Colors.grey, size: 22),
-                SizedBox(width: 12),
+              children: [
+                const Icon(Icons.search, color: Colors.grey, size: 22),
+                const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
-                    decoration: InputDecoration(
+                    onChanged: (value) {
+                      controller.updateSearchQuery(value);
+                    },
+                    decoration: const InputDecoration(
                       hintText: 'Searching ?',
                       hintStyle: TextStyle(
                         color: Colors.grey,
@@ -58,7 +56,6 @@ class SearchAndFilterSection extends StatelessWidget {
         ),
 
         const SizedBox(height: 24),
-
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
@@ -69,11 +66,11 @@ class SearchAndFilterSection extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
-                      color: travelokaBlue, 
+                      color: travelokaBlue,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: const Icon(
-                      Icons.attach_money, 
+                      Icons.attach_money,
                       color: Colors.white,
                       size: 18,
                     ),
@@ -89,7 +86,6 @@ class SearchAndFilterSection extends StatelessWidget {
                   ),
                 ],
               ),
-
               TextButton(
                 onPressed: onSeeAllPressed,
                 style: TextButton.styleFrom(
@@ -99,9 +95,10 @@ class SearchAndFilterSection extends StatelessWidget {
                 child: const Text(
                   'See All >',
                   style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      color: travelokaBlue),
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: travelokaBlue,
+                  ),
                 ),
               ),
             ],
@@ -109,47 +106,54 @@ class SearchAndFilterSection extends StatelessWidget {
         ),
 
         const SizedBox(height: 8),
-
         SizedBox(
           height: 36,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            itemCount: priceRanges.length,
-            itemBuilder: (context, index) {
-              final range = priceRanges[index];
-              final isSelected = selectedPriceRange == range;
-              return Container(
-                margin: const EdgeInsets.only(right: 8),
-                child: ElevatedButton(
-                  onPressed: () => onPriceRangeSelected(range),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isSelected ? travelokaBlue : Colors.white,
-                    foregroundColor:
-                        isSelected ? Colors.white : Colors.black87,
-                    elevation: isSelected ? 2 : 0,
-                    shadowColor: Colors.black.withOpacity(0.1),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: isSelected
+          child: GetBuilder<KosController>(
+            builder: (controller) {
+              return ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: controller.priceRanges.length,
+                itemBuilder: (context, index) {
+                  final range = controller.priceRanges[index];
+                  final isSelected = controller.selectedPriceRange == range;
+
+                  return Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    child: ElevatedButton(
+                      onPressed: () => controller.updatePriceRange(range),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isSelected
                             ? travelokaBlue
-                            : Colors.grey[300]!,
-                        width: 1,
+                            : Colors.white,
+                        foregroundColor: isSelected
+                            ? Colors.white
+                            : Colors.black87,
+                        elevation: isSelected ? 2 : 0,
+                        shadowColor: Colors.black.withOpacity(0.1),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(
+                            color: isSelected
+                                ? travelokaBlue
+                                : Colors.grey[300]!,
+                            width: 1,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        range,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w400,
+                        ),
                       ),
                     ),
-                  ),
-                  child: Text(
-                    range,
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight:
-                          isSelected ? FontWeight.w600 : FontWeight.w400,
-                    ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           ),

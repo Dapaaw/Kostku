@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/kos_model.dart';
+import '/data/models/kos_model.dart';
 
 class FavoriteCard extends StatelessWidget {
   final KosModel kos;

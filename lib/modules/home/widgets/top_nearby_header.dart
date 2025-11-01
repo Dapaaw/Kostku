@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme.dart';
+import '/config/theme.dart';
 
 class TopNearbyHeader extends StatelessWidget {
   final List<String> locations;
@@ -66,8 +66,7 @@ class TopNearbyHeader extends StatelessWidget {
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
-                    value:
-                        selectedLocation,
+                    value: selectedLocation,
                     icon: const Icon(
                       Icons.arrow_drop_down,
                       size: 15,
@@ -85,7 +84,7 @@ class TopNearbyHeader extends StatelessWidget {
                         child: Text(location),
                       );
                     }).toList(),
-                    onChanged: onLocationChanged, 
+                    onChanged: onLocationChanged,
                   ),
                 ),
               ),

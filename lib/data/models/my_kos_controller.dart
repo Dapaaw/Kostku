@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
-import '../models/kos_model.dart';
+import 'kos_model.dart';
 
 class MyKosController extends GetxController {
-  final RxList<KosModel> myKosList = <KosModel>[].obs;
+  List<KosModel> myKosList = <KosModel>[];
 
   void addMyKos(KosModel kos) {
     if (!isBooked(kos.id)) {
       myKosList.add(kos);
+      update();
     }
   }
 
@@ -16,5 +17,6 @@ class MyKosController extends GetxController {
 
   void removeMyKos(int kosId) {
     myKosList.removeWhere((item) => item.id == kosId);
+    update();
   }
 }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../modules/home/widgets/bottom_navbar.dart';
-import '../../../modules/home/pages/home_page.dart';
-import '../../my_kos/pages/my_kos_page.dart';
-import '../../../modules/favorite/pages/favorite_page.dart';
-import '../../../config/theme.dart';
+import 'package:get/get.dart';
+import '/modules/home/widgets/bottom_navbar.dart';
+import '/config/theme.dart';
+import '/routes/app_routes.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -107,20 +106,14 @@ class ProfilePage extends StatelessWidget {
         onTap: (index) {
           if (index == 3) return;
           if (index == 0) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const HomePage()),
-            );
+            Get.offNamed(AppRoutes.home);
+            ;
           } else if (index == 1) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const MyTripPage()),
-            );
+            Get.offNamed(AppRoutes.myTrip);
+            ;
           } else if (index == 2) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const FavoritePage()),
-            );
+            Get.offNamed(AppRoutes.favorite);
+            ;
           }
         },
       ),

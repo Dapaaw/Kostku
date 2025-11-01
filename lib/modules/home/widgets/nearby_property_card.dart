@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme.dart';
+import '/config/theme.dart';
 
 class NearbyPropertyCard extends StatelessWidget {
   final String propertyId;
@@ -7,7 +7,7 @@ class NearbyPropertyCard extends StatelessWidget {
   final String title;
   final String location;
   final String price;
-  final double rating; 
+  final double rating;
   final bool isFavorite;
   final VoidCallback onFavoriteToggle;
 
@@ -18,7 +18,7 @@ class NearbyPropertyCard extends StatelessWidget {
     required this.title,
     required this.location,
     required this.price,
-    required this.rating, 
+    required this.rating,
     required this.isFavorite,
     required this.onFavoriteToggle,
   });
@@ -55,8 +55,11 @@ class NearbyPropertyCard extends StatelessWidget {
                       width: 120,
                       height: 100,
                       color: Colors.grey[300],
-                      child: const Icon(Icons.image,
-                          size: 30, color: Colors.grey),
+                      child: const Icon(
+                        Icons.image,
+                        size: 30,
+                        color: Colors.grey,
+                      ),
                     );
                   },
                 ),
@@ -76,11 +79,7 @@ class NearbyPropertyCard extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(
-                        Icons.star,
-                        color: Colors.amber,
-                        size: 14,
-                      ),
+                      const Icon(Icons.star, color: Colors.amber, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         rating.toString(),

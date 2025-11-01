@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../config/theme.dart';
+import '/config/theme.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -24,8 +24,8 @@ class BottomNavBar extends StatelessWidget {
         ],
       ),
       child: BottomNavigationBar(
-        currentIndex: selectedIndex, 
-        onTap: onTap, 
+        currentIndex: selectedIndex,
+        onTap: onTap,
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedItemColor: travelokaBlue,

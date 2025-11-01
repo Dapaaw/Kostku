@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '/config/constants.dart';
 import 'dart:convert';
 
 import '../widgets/input_field.dart';
 import '../widgets/auth_button.dart';
+
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -18,13 +20,15 @@ class SignUpScreen extends StatelessWidget {
     final navigator = Navigator.of(context);
 
     if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
-      messenger.showSnackBar(const SnackBar(content: Text('Semua field harus diisi')));
+      messenger.showSnackBar(
+        const SnackBar(content: Text('Semua field harus diisi')),
+      );
       return;
     }
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/register'),
+        Uri.parse('${AppConstants.baseUrl}/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'full_name': fullName,
@@ -36,9 +40,7 @@ class SignUpScreen extends StatelessWidget {
       final data = jsonDecode(response.body);
       if (response.statusCode == 201) {
         messenger.showSnackBar(
-          const SnackBar(
-            content: Text('Akun berhasil dibuat'),
-          ),
+          const SnackBar(content: Text('Akun berhasil dibuat')),
         );
         navigator.pushReplacementNamed('/login');
       } else {
@@ -53,9 +55,9 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final fullNameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+    final fullNameController = TextEditingController();
+    final emailController = TextEditingController();
+    final passwordController = TextEditingController();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF6F8FB),
@@ -123,7 +125,7 @@ class SignUpScreen extends StatelessWidget {
                       final email = emailController.text.trim();
                       final password = passwordController.text.trim();
                       registerUser(context, fullName, email, password);
-                    }
+                    },
                   ),
                 ),
               ],
