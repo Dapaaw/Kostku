@@ -28,10 +28,10 @@ class NearbyPropertyCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -43,7 +43,7 @@ class NearbyPropertyCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.horizontal(
-                  left: Radius.circular(12),
+                  left: Radius.circular(8),
                 ),
                 child: Image.network(
                   imageUrl,
@@ -54,11 +54,11 @@ class NearbyPropertyCard extends StatelessWidget {
                     return Container(
                       width: 120,
                       height: 100,
-                      color: Colors.grey[300],
-                      child: const Icon(
+                      color: klookSoftGray,
+                      child: Icon(
                         Icons.image,
                         size: 30,
-                        color: Colors.grey,
+                        color: klookGray,
                       ),
                     );
                   },
@@ -74,12 +74,12 @@ class NearbyPropertyCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 14),
+                      const Icon(Icons.star, color: klookOrange, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         rating.toString(),
@@ -107,8 +107,10 @@ class NearbyPropertyCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: klookBlack,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -116,15 +118,19 @@ class NearbyPropertyCard extends StatelessWidget {
                       const Icon(
                         Icons.location_on,
                         size: 12,
-                        color: travelokaMediumGray,
+                        color: klookGray,
                       ),
                       const SizedBox(width: 4),
-                      Text(
-                        location,
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: travelokaMediumGray,
-                          fontWeight: FontWeight.w400,
+                      Expanded(
+                        child: Text(
+                          location,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: klookGray,
+                            fontWeight: FontWeight.w400,
+                          ),
                         ),
                       ),
                     ],
@@ -142,16 +148,16 @@ class NearbyPropertyCard extends StatelessWidget {
                               'Start from',
                               style: TextStyle(
                                 fontSize: 9,
-                                color: travelokaMediumGray,
+                                color: klookGray,
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
                             Text(
-                              '$price/month',
+                              price,
                               style: const TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w700,
-                                color: travelokaPriceRed,
+                                color: klookOrange,
                               ),
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -162,7 +168,7 @@ class NearbyPropertyCard extends StatelessWidget {
                         onTap: onFavoriteToggle,
                         child: Icon(
                           isFavorite ? Icons.favorite : Icons.favorite_border,
-                          color: travelokaBlue,
+                          color: klookOrange,
                           size: 20,
                         ),
                       ),

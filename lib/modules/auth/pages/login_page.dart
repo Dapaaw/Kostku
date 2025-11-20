@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:dio/dio.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '/data/models/auth_controller.dart';
+import '/data/models/favorite_controller.dart';
+import '/data/services/api_service.dart';
 import '../widgets/input_field.dart';
-import '../pages/signup_page.dart';
-import '../pages/forgot_password_page.dart';
 import '../widgets/auth_button.dart';
-import '/config/constants.dart';
+import '../widgets/auth_header.dart';
+import '../widgets/auth_footer.dart';
+import '../pages/signup_page.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -15,6 +19,8 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    
+    final ApiService apiService = ApiService();
 
     Future<void> loginUser(
       BuildContext context,
@@ -22,7 +28,6 @@ class LoginScreen extends StatelessWidget {
       String password,
     ) async {
       final messenger = ScaffoldMessenger.of(context);
-      final navigator = Navigator.of(context);
 
       if (email.isEmpty || password.isEmpty) {
         messenger.showSnackBar(
@@ -34,26 +39,35 @@ class LoginScreen extends StatelessWidget {
       }
 
       try {
-        final response = await http.post(
-          Uri.parse('${AppConstants.baseUrl}/login'),
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'email': email, 'password': password}),
-        );
-
-        final data = jsonDecode(response.body);
+        final response = await apiService.login(email, password);
+        final data = response.data;
 
         if (response.statusCode == 200) {
+          final String token = data['data']['token'];
+          final String userName = data['data']['user']['full_name'];
+          final String userEmail = data['data']['user']['email'];
+
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+          await prefs.setString('userName', userName);
+          await prefs.setString('userEmail', userEmail);
+          
+          Get.find<AuthController>().loadInitialData();
+          Get.find<FavoriteController>().fetchFavorites();
+          
           messenger.showSnackBar(
-            SnackBar(
-              content: Text('Login berhasil: ${data['data']['full_name']}'),
-            ),
+            SnackBar(content: Text('Login berhasil: $userName')),
           );
-          navigator.pushReplacementNamed('/');
-        } else {
-          messenger.showSnackBar(
-            SnackBar(content: Text(data['message'] ?? 'Login gagal')),
-          );
+          Get.offAllNamed('/home');
         }
+      } on DioException catch (e) {
+        String errorMessage = 'Login gagal';
+        if (e.response != null) {
+          errorMessage = e.response?.data['message'] ?? 'Login gagal';
+        } else {
+          errorMessage = 'Terjadi kesalahan:${e.message}';
+        }
+        messenger.showSnackBar(SnackBar(content: Text(errorMessage)));
       } catch (e) {
         messenger.showSnackBar(
           SnackBar(content: Text('Terjadi kesalahan: $e')),
@@ -62,7 +76,7 @@ class LoginScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8FB),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Center(
@@ -70,18 +84,9 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
-                  'Sign In',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF1D1E20),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Enter valid email & password to continue',
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                const AuthHeader(
+                  title: 'Sign In',
+                  subtitle: 'Enter valid email & password to continue',
                 ),
                 const SizedBox(height: 32),
                 InputField(hintText: 'Email', controller: emailController),
@@ -90,25 +95,6 @@ class LoginScreen extends StatelessWidget {
                   hintText: 'Password',
                   controller: passwordController,
                   obscureText: true,
-                ),
-                const SizedBox(height: 12),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const ForgetPasswordScreen(),
-                      ),
-                    ),
-                    child: const Text(
-                      'Forget password',
-                      style: TextStyle(
-                        color: Color(0xFF1D1E20),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
                 ),
                 const SizedBox(height: 16),
                 SizedBox(
@@ -124,24 +110,13 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Haven't any account? "),
-                    GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SignUpScreen()),
-                      ),
-                      child: const Text(
-                        'Sign up',
-                        style: TextStyle(
-                          color: Color(0xFF1D3557),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ],
+                AuthFooter(
+                  question: "Haven't any account? ",
+                  actionText: 'Sign up',
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const SignUpScreen()),
+                  ),
                 ),
               ],
             ),

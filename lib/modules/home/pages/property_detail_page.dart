@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:kos/data/models/auth_controller.dart';
 
+import '/config/theme.dart';
 import '/data/models/kos_model.dart';
 import '/data/models/my_kos_controller.dart';
+import '/data/models/review_controller.dart';
+import '/routes/app_routes.dart';
 import '../../my_kos/pages/my_kos_page.dart';
+import '../widgets/property_header_info.dart';
+import '../widgets/property_statistics_row.dart';
+import '../widgets/property_image_gallery.dart';
+import '../widgets/property_review_section.dart';
+import '../widgets/property_back_button.dart';
 
 class PropertyDetailPage extends StatelessWidget {
   final KosModel property;
 
-  const PropertyDetailPage({super.key, required this.property});
+  PropertyDetailPage({super.key, required this.property});
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
-    final currencyFormat = NumberFormat.currency(
-      locale: 'id_ID',
-      symbol: 'Rp ',
+    final ReviewController reviewController = Get.put(
+      ReviewController(kosId: property.id),
     );
-
-    const kPrimaryColor = Color(0xFF0D47A1);
-    const kButtonColor = Color(0xFF00A7E1);
-    const kLightGreyColor = Color(0xFFF7F7F7);
 
     return Scaffold(
       body: Stack(
@@ -38,7 +42,7 @@ class PropertyDetailPage extends StatelessWidget {
                     if (loadingProgress == null) return child;
                     return Container(
                       height: 350,
-                      color: Colors.grey[200],
+                      color: klookSoftGray,
                       child: const Center(child: CircularProgressIndicator()),
                     );
                   },
@@ -49,77 +53,20 @@ class PropertyDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (property.galleryImageUrls.isNotEmpty)
-                        _buildImageGallery(property.galleryImageUrls)
-                      else
-                        const SizedBox(height: 8),
-
-                      const SizedBox(height: 24),
-
-                      Text(
-                        property.name,
-                        style: const TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      PropertyImageGallery(
+                        images: property.galleryImageUrls,
                       ),
-
-                      const SizedBox(height: 12),
-
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            currencyFormat
-                                .format(property.price.toDouble())
-                                .split(',')[0],
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: kPrimaryColor,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.grey[600],
-                            size: 18,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              property.location,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey[600],
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-
                       const SizedBox(height: 24),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          _buildStatItem(
-                            Icons.bed_outlined,
-                            '${property.bedrooms} Beds',
-                            kLightGreyColor,
-                          ),
-                          _buildStatItem(
-                            Icons.bathtub_outlined,
-                            '${property.bathrooms} Baths',
-                            kLightGreyColor,
-                          ),
-                          _buildStatItem(
-                            Icons.kitchen_outlined,
-                            '${property.kitchen} Kitchen',
-                            kLightGreyColor,
-                          ),
-                        ],
+                      PropertyHeaderInfo(
+                        property: property,
+                        primaryColor: klookOrange,
+                      ),
+                      const SizedBox(height: 24),
+                      PropertyStatisticsRow(
+                        bedrooms: property.bedrooms,
+                        bathrooms: property.bathrooms,
+                        kitchen: property.kitchen,
+                        backgroundColor: klookBackground,
                       ),
 
                       const SizedBox(height: 24),
@@ -134,13 +81,17 @@ class PropertyDetailPage extends StatelessWidget {
                       const SizedBox(height: 10),
                       Text(
                         property.description,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 15,
-                          color: Colors.grey[700],
+                          color: klookGray,
                           height: 1.5,
                         ),
                       ),
 
+                      const SizedBox(height: 30),
+                      const Divider(),
+                      const SizedBox(height: 24),
+                      PropertyReviewSection(controller: reviewController),
                       const SizedBox(height: 32),
 
                       SizedBox(
@@ -148,29 +99,48 @@ class PropertyDetailPage extends StatelessWidget {
                         height: 55,
                         child: ElevatedButton(
                           onPressed: () {
-                            final MyKosController myKosController =
-                                Get.find<MyKosController>();
+                            if (authController.isLoggedIn.value) {
+                              final MyKosController myKosController =
+                                  Get.find<MyKosController>();
 
-                            myKosController.addMyKos(property);
+                              myKosController.addMyKos(property);
 
-                            Get.snackbar(
-                              'Success',
-                              '${property.name} telah ditambahkan ke daftar kos Anda.',
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: Colors.green[400],
-                              colorText: Colors.white,
-                              margin: const EdgeInsets.all(16),
-                            );
+                              Get.snackbar(
+                                'Success',
+                                '${property.name} telah ditambahkan ke daftar kos Anda.',
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: Colors.green[400],
+                                colorText: Colors.white,
+                                margin: const EdgeInsets.all(16),
+                              );
 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (_) => MyTripPage()),
-                            );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (_) => MyTripPage()),
+                              );
+                            } else {
+                              Get.defaultDialog(
+                                title: 'Perlu Login',
+                                titleStyle: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                middleText:
+                                    'Anda harus login untuk bisa memesan kos.',
+                                textConfirm: 'Login Sekarang',
+                                confirmTextColor: Colors.white,
+                                onConfirm: () {
+                                  Get.back();
+                                  Get.toNamed(AppRoutes.login);
+                                },
+                                textCancel: 'Batal',
+                                onCancel: () {},
+                              );
+                            }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: kButtonColor,
+                            backgroundColor: klookOrange,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: const Text(
@@ -191,78 +161,8 @@ class PropertyDetailPage extends StatelessWidget {
             ),
           ),
 
-          _buildBackButton(context),
+          const PropertyBackButton(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    return Positioned(
-      top: 50,
-      left: 15,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.8),
-          shape: BoxShape.circle,
-        ),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImageGallery(List<String> images) {
-    return SizedBox(
-      height: 80,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: images.length,
-        itemBuilder: (context, index) {
-          return Container(
-            width: 80,
-            margin: const EdgeInsets.only(right: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              image: DecorationImage(
-                image: NetworkImage(images[index]),
-                fit: BoxFit.cover,
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildStatItem(IconData icon, String label, Color bgColor) {
-    return Expanded(
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: Colors.grey[700], size: 28),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[800],
-                fontWeight: FontWeight.w600,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
       ),
     );
   }

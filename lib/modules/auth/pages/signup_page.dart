@@ -1,80 +1,85 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import '/config/constants.dart';
-import 'dart:convert';
-
+import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../../data/services/api_service.dart';
 import '../widgets/input_field.dart';
 import '../widgets/auth_button.dart';
-
+import '../widgets/auth_header.dart';
+import '../widgets/terms_text.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
-
-  Future<void> registerUser(
-    BuildContext context,
-    String fullName,
-    String email,
-    String password,
-  ) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final navigator = Navigator.of(context);
-
-    if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Semua field harus diisi')),
-      );
-      return;
-    }
-
-    try {
-      final response = await http.post(
-        Uri.parse('${AppConstants.baseUrl}/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'full_name': fullName,
-          'email': email,
-          'password': password,
-        }),
-      );
-
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 201) {
-        messenger.showSnackBar(
-          const SnackBar(content: Text('Akun berhasil dibuat')),
-        );
-        navigator.pushReplacementNamed('/login');
-      } else {
-        messenger.showSnackBar(
-          SnackBar(content: Text(data['message'] ?? 'Gagal membuat akun')),
-        );
-      }
-    } catch (e) {
-      messenger.showSnackBar(SnackBar(content: Text('Terjadi kesalahan: $e')));
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final fullNameController = TextEditingController();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
+    final ApiService apiService = ApiService();
+
+    Future<void> registerUser(
+      BuildContext context,
+      String fullName,
+      String email,
+      String password,
+    ) async {
+      final messenger = ScaffoldMessenger.of(context);
+      final navigator = Navigator.of(context);
+
+      if (fullName.isEmpty || email.isEmpty || password.isEmpty) {
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Semua field harus diisi')),
+        );
+        return;
+      }
+
+      try {
+        final response = await apiService.register(
+          fullName: fullName,
+          email: email,
+          password: password,
+        );
+        final data = response.data;
+
+        if (response.statusCode == 201) {
+          final String token = data['data']['token'];
+
+          final SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+
+          messenger.showSnackBar(
+            const SnackBar(
+              content: Text('Akun berhasil dibuat! Anda otomatis login.'),
+            ),
+          );
+          navigator.pushReplacementNamed('/');
+        }
+      } on DioException catch (e) {
+        String errorMessage = 'Register gagal';
+        if (e.response != null) {
+          errorMessage = e.response?.data['message'] ?? 'Register gagal';
+        } else {
+          errorMessage = 'Terjadi kesalahan: ${e.message}';
+        }
+        messenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+      } catch (e) {
+        messenger.showSnackBar(
+          SnackBar(content: Text('Terjadi kesalahan: $e')),
+        );
+      }
+    }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F8FB),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Center(
           child: SingleChildScrollView(
             child: Column(
               children: [
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Use paper information to continue',
-                  style: TextStyle(fontSize: 13, color: Colors.black54),
+                const AuthHeader(
+                  title: 'Sign Up',
+                  subtitle: 'Use paper information to continue',
                 ),
                 const SizedBox(height: 32),
                 InputField(
@@ -90,30 +95,7 @@ class SignUpScreen extends StatelessWidget {
                   obscureText: true,
                 ),
                 const SizedBox(height: 24),
-                const Text.rich(
-                  TextSpan(
-                    text: 'By signing up, you agree to our ',
-                    style: TextStyle(fontSize: 12, color: Colors.black54),
-                    children: [
-                      TextSpan(
-                        text: 'Terms & Conditions',
-                        style: TextStyle(
-                          color: Color(0xFF1D3557),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      TextSpan(text: ' and '),
-                      TextSpan(
-                        text: 'Privacy Policy',
-                        style: TextStyle(
-                          color: Color(0xFF1D3557),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  textAlign: TextAlign.center,
-                ),
+                const TermsText(),
                 const SizedBox(height: 12),
                 SizedBox(
                   width: double.infinity,

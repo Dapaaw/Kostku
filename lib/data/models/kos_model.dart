@@ -1,3 +1,5 @@
+import '/config/constants.dart';
+
 class KosModel {
   final int id;
   final String name;
@@ -29,18 +31,27 @@ class KosModel {
   });
 
   factory KosModel.fromJson(Map<String, dynamic> json) {
+    String imagePath = json['main_image_url'] ?? '';
+    String fullImageUrl = '';
+    if (imagePath.isNotEmpty) {
+      String storageBaseUrl = AppConstants.baseUrl.replaceAll(
+        '/api',
+        '/storage',
+      );
+      fullImageUrl = '$storageBaseUrl/$imagePath';
+    }
     return KosModel(
       id: json['id'],
       name: json['name'] ?? '',
-      location: json['location'] ?? '',
-      price: (json['price'] as num).toDouble(),
-      imageUrl: json['imageUrl'] ?? '',
+      location: json['address'] ?? 'Alamat tidak diketahui',
+      price: (json['price'] as num? ?? 0).toDouble(),
+      imageUrl: fullImageUrl,
       rating: (json['rating'] ?? 0).toDouble(),
 
       galleryImageUrls: List<String>.from(json['galleryImageUrls'] ?? []),
-      bedrooms: json['bedrooms'] ?? 6,
-      bathrooms: json['bathrooms'] ?? 2,
-      kitchen: json['kitchen'] ?? 1,
+      bedrooms: json['bedrooms'] ?? 1,
+      bathrooms: json['bathrooms'] ?? 1,
+      kitchen: json['kitchen'] ?? 0,
       description:
           json['description'] ??
           'Deskripsi lengkap untuk properti ini belum tersedia. Silakan hubungi pemilik untuk informasi lebih lanjut.',

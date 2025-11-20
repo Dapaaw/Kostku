@@ -4,6 +4,7 @@ import '../widgets/nearby_property_card.dart';
 import '../pages/property_detail_page.dart';
 import '/data/models/kos_model.dart';
 import '/data/models/favorite_controller.dart';
+import '/config/formatter.dart';
 
 class PriceListPage extends StatelessWidget {
   const PriceListPage({super.key});
@@ -12,13 +13,11 @@ class PriceListPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final arguments = Get.arguments;
-    String title = 'Daftar Kos';
 
     List<KosModel> kosList = [];
 
     if (arguments != null && arguments is Map<String, dynamic>) {
-      title = arguments['title'] ?? 'Daftar Kos';
-      kosList = arguments['kosList'] ?? [];
+      kosList = arguments['kos_list'] ?? [];
     }
 
     final FavoriteController favoriteController =
@@ -28,6 +27,7 @@ class PriceListPage extends StatelessWidget {
       appBar: AppBar(title: Text('Daftar Kos'), centerTitle: true),
 
       body: GetBuilder<FavoriteController>(
+        init: favoriteController,
         builder: (controller) {
           if (kosList.isEmpty) {
             return const Center(child: Text('Tidak ada kos tersedia.'));
@@ -51,7 +51,7 @@ class PriceListPage extends StatelessWidget {
                     imageUrl: kos.imageUrl,
                     title: kos.name,
                     location: kos.location,
-                    price: "Rp ${kos.price.toInt()}",
+                    price: "Rp ${currencyFormatter.format(kos.price)}/bulan",
                     rating: kos.rating,
                     isFavorite: controller.isFavorite(kos.id),
                     onFavoriteToggle: () {

@@ -30,10 +30,10 @@ class PropertyCard extends StatelessWidget {
       margin: const EdgeInsets.only(right: 14),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -46,7 +46,7 @@ class PropertyCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
+                  top: Radius.circular(8),
                 ),
                 child: Image.network(
                   imageUrl,
@@ -57,11 +57,11 @@ class PropertyCard extends StatelessWidget {
                     return Container(
                       width: 200,
                       height: 120,
-                      color: Colors.grey[300],
-                      child: const Icon(
+                      color: klookSoftGray,
+                      child: Icon(
                         Icons.image,
                         size: 40,
-                        color: Colors.grey,
+                        color: klookGray,
                       ),
                     );
                   },
@@ -77,12 +77,12 @@ class PropertyCard extends StatelessWidget {
                   ),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 14),
+                      const Icon(Icons.star, color: klookOrange, size: 14),
                       const SizedBox(width: 4),
                       Text(
                         rating.toString(),
@@ -108,8 +108,10 @@ class PropertyCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+                    color: klookBlack,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -117,15 +119,19 @@ class PropertyCard extends StatelessWidget {
                     const Icon(
                       Icons.location_on,
                       size: 12,
-                      color: travelokaMediumGray,
+                      color: klookGray,
                     ),
                     const SizedBox(width: 4),
-                    Text(
-                      location,
-                      style: const TextStyle(
-                        fontSize: 11,
-                        color: travelokaMediumGray,
-                        fontWeight: FontWeight.w400,
+                    Expanded(
+                      child: Text(
+                        location,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 11,
+                          color: klookGray,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ],
@@ -143,16 +149,16 @@ class PropertyCard extends StatelessWidget {
                             'Start from',
                             style: TextStyle(
                               fontSize: 9,
-                              color: travelokaMediumGray,
+                              color: klookGray,
                               fontWeight: FontWeight.w400,
                             ),
                           ),
                           Text(
-                            '$price/month',
+                            price,
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              color: travelokaPriceRed,
+                              color: klookOrange,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -163,7 +169,7 @@ class PropertyCard extends StatelessWidget {
                       onTap: onFavoriteToggle,
                       child: Icon(
                         isFavorite ? Icons.favorite : Icons.favorite_border,
-                        color: travelokaBlue,
+                        color: klookOrange,
                         size: 20,
                       ),
                     ),

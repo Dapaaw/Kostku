@@ -20,10 +20,10 @@ class SearchAndFilterSection extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.04),
+                  color: Colors.black.withValues(alpha: 0.04),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),
@@ -31,17 +31,17 @@ class SearchAndFilterSection extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.search, color: Colors.grey, size: 22),
+                Icon(Icons.search, color: klookGray, size: 22),
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
                     onChanged: (value) {
                       controller.updateSearchQuery(value);
                     },
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Searching ?',
                       hintStyle: TextStyle(
-                        color: Colors.grey,
+                        color: klookGray,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
@@ -66,8 +66,8 @@ class SearchAndFilterSection extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(7),
                     decoration: BoxDecoration(
-                      color: travelokaBlue,
-                      borderRadius: BorderRadius.circular(10),
+                      color: klookOrange,
+                      borderRadius: BorderRadius.circular(8),
                     ),
                     child: const Icon(
                       Icons.attach_money,
@@ -81,7 +81,7 @@ class SearchAndFilterSection extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: klookBlack,
                     ),
                   ),
                 ],
@@ -89,7 +89,7 @@ class SearchAndFilterSection extends StatelessWidget {
               TextButton(
                 onPressed: onSeeAllPressed,
                 style: TextButton.styleFrom(
-                  foregroundColor: travelokaBlue,
+                  foregroundColor: klookOrange,
                   padding: EdgeInsets.zero,
                 ),
                 child: const Text(
@@ -97,7 +97,7 @@ class SearchAndFilterSection extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: travelokaBlue,
+                    color: klookOrange,
                   ),
                 ),
               ),
@@ -105,10 +105,11 @@ class SearchAndFilterSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: 8),  
         SizedBox(
           height: 36,
           child: GetBuilder<KosController>(
+            init: controller,
             builder: (controller) {
               return ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -124,20 +125,20 @@ class SearchAndFilterSection extends StatelessWidget {
                       onPressed: () => controller.updatePriceRange(range),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isSelected
-                            ? travelokaBlue
+                            ? klookOrange
                             : Colors.white,
                         foregroundColor: isSelected
                             ? Colors.white
-                            : Colors.black87,
+                            : klookBlack,
                         elevation: isSelected ? 2 : 0,
-                        shadowColor: Colors.black.withOpacity(0.1),
+                        shadowColor: Colors.black.withValues(alpha: 0.1),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(8),
                           side: BorderSide(
                             color: isSelected
-                                ? travelokaBlue
-                                : Colors.grey[300]!,
+                                ? klookOrange
+                                : klookSoftGray,
                             width: 1,
                           ),
                         ),

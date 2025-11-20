@@ -25,8 +25,8 @@ class TopNearbyHeader extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(7),
                 decoration: BoxDecoration(
-                  color: travelokaBlue,
-                  borderRadius: BorderRadius.circular(10),
+                  color: klookOrange,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: const Icon(Icons.near_me, color: Colors.white, size: 18),
               ),
@@ -36,7 +36,7 @@ class TopNearbyHeader extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black87,
+                  color: klookBlack,
                 ),
               ),
             ],
@@ -50,7 +50,7 @@ class TopNearbyHeader extends StatelessWidget {
                     'Location',
                     style: TextStyle(
                       fontSize: 12,
-                      color: travelokaMediumGray,
+                      color: klookGray,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -62,7 +62,7 @@ class TopNearbyHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: klookSoftGray),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
@@ -70,12 +70,12 @@ class TopNearbyHeader extends StatelessWidget {
                     icon: const Icon(
                       Icons.arrow_drop_down,
                       size: 15,
-                      color: Colors.black54,
+                      color: klookGray,
                     ),
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Colors.black87,
+                      color: klookBlack,
                       fontFamily: 'Poppins',
                     ),
                     items: locations.map((String location) {
@@ -94,12 +94,12 @@ class TopNearbyHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
+                  border: Border.all(color: klookSoftGray),
                 ),
                 child: const Icon(
                   Icons.my_location,
                   size: 14,
-                  color: Colors.black54,
+                  color: klookGray,
                 ),
               ),
             ],
