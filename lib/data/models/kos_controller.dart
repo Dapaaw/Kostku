@@ -1,12 +1,16 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart'; // Wajib ada untuk TextEditingController
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
 import 'kos_model.dart';
 import '../services/api_service.dart';
 
 class KosController extends GetxController {
+  // 1. Controller untuk menjaga Teks agar tidak hilang saat loading
+  final TextEditingController searchController = TextEditingController();
+
   List<KosModel> filteredTopProperties = [];
   List<KosModel> filteredNearbyProperties = [];
+
   final List<String> locations = [
     'Semua Lokasi',
     'Lowokwaru',
@@ -15,6 +19,7 @@ class KosController extends GetxController {
     'Blimbing',
   ];
   String selectedLocation = 'Semua Lokasi';
+
   final List<String> priceRanges = [
     'Semua Harga',
     'Rp 0 - Rp 700.000',
@@ -23,7 +28,9 @@ class KosController extends GetxController {
     'Rp 1.500.000 - Rp 2.600.000',
   ];
   String selectedPriceRange = 'Semua Harga';
-  String searchQuery = '';
+
+  // 2. Ubah jadi .obs agar bisa dipantau oleh debounce
+  var searchQuery = ''.obs;
 
   final ApiService apiServices = ApiService();
   var isLoading = true.obs;
@@ -33,6 +40,17 @@ class KosController extends GetxController {
   void onInit() {
     super.onInit();
     fetchKosFromApi();
+
+    // 3. DEBOUNCE: Tunggu 500ms setelah user berhenti mengetik, baru panggil API
+    debounce(searchQuery, (callback) {
+      fetchKosFromApi();
+    }, time: const Duration(milliseconds: 500));
+  }
+
+  @override
+  void onClose() {
+    searchController.dispose(); // Bersihkan memori
+    super.onClose();
   }
 
   void updatePriceRange(String newRange) {
@@ -47,8 +65,8 @@ class KosController extends GetxController {
   }
 
   void updateSearchQuery(String query) {
-    searchQuery = query;
-    fetchKosFromApi();
+    // Cukup update variabel, debounce di onInit yang akan panggil API
+    searchQuery.value = query;
   }
 
   (double, double) _parsePriceRange(String range) {
@@ -66,7 +84,6 @@ class KosController extends GetxController {
     return (minParsed, maxParsed);
   }
 
-  // --- FUNGSI FETCH (Sedikit diubah) ---
   void fetchKosFromApi() async {
     try {
       isLoading(true);
@@ -75,11 +92,18 @@ class KosController extends GetxController {
       final (double minPrice, double maxPrice) = _parsePriceRange(
         selectedPriceRange,
       );
-      
-      String? locationToSend = selectedLocation == 'Semua Lokasi' ? null : selectedLocation;
-      
+
+      String? locationToSend = selectedLocation == 'Semua Lokasi'
+          ? null
+          : selectedLocation;
+
+      // Ambil value dari .obs
+      String? searchToSend = searchQuery.value.isEmpty
+          ? null
+          : searchQuery.value;
+
       final response = await apiServices.getAllKos(
-        search: searchQuery.isEmpty ? null : searchQuery,
+        search: searchToSend,
         location: locationToSend,
         minPrice: minPrice == 0 ? null : minPrice,
         maxPrice: maxPrice == double.infinity ? null : maxPrice,
@@ -91,16 +115,15 @@ class KosController extends GetxController {
             .toList();
 
         filteredTopProperties = filteredResults;
-
         filteredNearbyProperties = filteredResults;
+
+        update(); // Refresh UI
       } else {
         errorMessage('Gagal mengambil data dari server.');
       }
     } on DioException catch (e) {
       debugPrint('DioException: ${e.message}');
-      debugPrint('Response: ${e.response?.data}');
-      debugPrint('Status Code: ${e.response?.statusCode}');
-      
+
       if (e.response?.statusCode == 500) {
         errorMessage('Server error. Periksa backend Laravel.');
       } else if (e.response?.statusCode == 404) {
@@ -113,6 +136,7 @@ class KosController extends GetxController {
       errorMessage('Terjadi error tidak diketahui: $e');
     } finally {
       isLoading(false);
+      update(); // Pastikan loading mati di UI
     }
   }
 }

@@ -1,35 +1,53 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../home/widgets/nearby_property_card.dart';
-import '../../home/pages/property_detail_page.dart'; 
+import '../../home/pages/property_detail_page.dart';
 import '/data/models/kos_model.dart';
 import '/data/models/favorite_controller.dart';
-import '/config/formatter.dart';
-import '../../home/widgets/bottom_navbar.dart'; 
-import '/routes/app_routes.dart'; 
+import '../../home/widgets/bottom_navbar.dart';
+import '/routes/app_routes.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Cari controller
     final FavoriteController favController = Get.find<FavoriteController>();
+
+    // PENTING: Panggil fetch data setiap buka halaman ini
+    // Agar data selalu sinkron dengan server
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      favController.fetchFavorites();
+    });
 
     return Scaffold(
       appBar: AppBar(title: const Text('Kos Favorit'), centerTitle: true),
-      
+
       body: Obx(() {
-        final List<KosModel> favoriteKosList = favController.favoriteKosList
-            .where((kos) => favController.isFavorite(kos.id))
-            .toList();
+        // Tampilkan Loading jika sedang fetch
+        if (favController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Ambil list langsung dari controller
+        final List<KosModel> favoriteKosList = favController.favoriteKosList;
 
         if (favoriteKosList.isEmpty) {
           return Center(
-            child: Text(
-              'Belum ada kos favorit.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontSize: 16,
-              ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.favorite_border, size: 60, color: Colors.grey[300]),
+                const SizedBox(height: 16),
+                Text(
+                  'Belum ada kos favorit.',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
             ),
           );
         }
@@ -51,9 +69,9 @@ class FavoritePage extends StatelessWidget {
                   imageUrl: kos.imageUrl,
                   title: kos.name,
                   location: kos.location,
-                  price: "${currencyFormatter.format(kos.price)} / bulan",
+                  price: "Rp ${kos.price.toInt()}", // Sesuaikan formatter kamu
                   rating: kos.rating,
-                  isFavorite: favController.isFavorite(kos.id),
+                  isFavorite: true, // Di halaman ini pasti true
                   onFavoriteToggle: () {
                     favController.toggleFavorite(kos);
                   },
@@ -65,13 +83,13 @@ class FavoritePage extends StatelessWidget {
       }),
 
       bottomNavigationBar: BottomNavBar(
-        selectedIndex: 2, 
+        selectedIndex: 2,
         onTap: (index) {
-          if (index == 2) return; 
+          if (index == 2) return;
           if (index == 0) {
             Get.offNamed(AppRoutes.home);
           } else if (index == 1) {
-            Get.offNamed(AppRoutes.myTrip);
+            Get.offNamed(AppRoutes.myTrip); // Pastikan nama route benar
           } else if (index == 3) {
             Get.offNamed(AppRoutes.profile);
           }

@@ -17,6 +17,7 @@ class ApiService {
         onRequest: (options, handler) async {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           var token = prefs.getString('token');
+          print("DEBUG TOKEN: $token");
 
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
@@ -248,7 +249,10 @@ class ApiService {
       if (maxPrice != null) {
         queryParams['max_price'] = maxPrice;
       }
-      Response response = await _dioPublic.get("${AppConstants.baseUrl}/kos",queryParameters: queryParams,);
+      Response response = await _dioPublic.get(
+        "${AppConstants.baseUrl}/kos",
+        queryParameters: queryParams,
+      );
       return response;
     } catch (e) {
       rethrow;

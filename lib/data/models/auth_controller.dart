@@ -91,6 +91,52 @@ class AuthController extends GetxController {
     }
   }
 
+  Future<void> login(String email, String password) async {
+    isLoading.value = true;
+    try {
+      // 1. Panggil API Login
+      final response = await apiService.login(email, password);
+
+      // 2. Ambil data dari respon server (Sesuaikan dengan JSON Laravel kamu)
+      // Struktur umum: { "data": { "token": "...", "user": { ... } } }
+      final responseData = response.data['data']; 
+      final String token = responseData['token'];
+      final String name = responseData['user']['name']; // atau 'full_name'
+      final String emailUser = responseData['user']['email'];
+
+      // 3. PENTING: Simpan Token ke SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('token', token);       // KUNCI UTAMA AGAR FAVORIT BISA JALAN
+      await prefs.setString('userName', name);
+      await prefs.setString('userEmail', emailUser);
+
+      // 4. Update State Aplikasi
+      isLoggedIn.value = true;
+      userName.value = name;
+      userEmail.value = emailUser;
+
+      Get.back(); // Tutup halaman login
+      
+      Get.snackbar(
+        'Berhasil', 
+        'Selamat datang kembali, $name!',
+        backgroundColor: Colors.green, 
+        colorText: Colors.white
+      );
+
+    } on DioException catch (e) {
+      // Handle error login (Password salah dll)
+      Get.snackbar(
+        'Login Gagal', 
+        e.response?.data['message'] ?? 'Email atau password salah',
+        backgroundColor: Colors.red, 
+        colorText: Colors.white
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   Future<void>changePassword(String oldPassword, String newPassword, String confirmPassword) async {
 
       if (oldPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {

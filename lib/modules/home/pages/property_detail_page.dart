@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // Import Wajib
 import 'package:kos/data/models/auth_controller.dart';
 
 import '/config/theme.dart';
@@ -22,8 +23,11 @@ class PropertyDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Pastikan ReviewController dibuat
     final ReviewController reviewController = Get.put(
       ReviewController(kosId: property.id),
+      tag:
+          'review_${property.id}', // Best practice: kasih tag biar unik per kos
     );
 
     return Scaffold(
@@ -33,29 +37,41 @@ class PropertyDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Image.network(
-                  property.imageUrl,
+                // --- PERUBAHAN: CachedNetworkImage untuk Header ---
+                CachedNetworkImage(
+                  imageUrl: property.imageUrl,
                   height: 350,
                   width: double.infinity,
                   fit: BoxFit.cover,
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      height: 350,
-                      color: klookSoftGray,
-                      child: const Center(child: CircularProgressIndicator()),
-                    );
-                  },
+
+                  // Optimasi Header (Resolusi agak tinggi tapi tetap dicache)
+                  memCacheWidth: 1000,
+
+                  placeholder: (context, url) => Container(
+                    height: 350,
+                    color: klookSoftGray,
+                    child: const Center(
+                      child: CircularProgressIndicator(color: klookOrange),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    height: 350,
+                    color: klookSoftGray,
+                    child: const Icon(
+                      Icons.broken_image,
+                      size: 50,
+                      color: klookGray,
+                    ),
+                  ),
                 ),
 
+                // --------------------------------------------------
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      PropertyImageGallery(
-                        images: property.galleryImageUrls,
-                      ),
+                      PropertyImageGallery(images: property.galleryImageUrls),
                       const SizedBox(height: 24),
                       PropertyHeaderInfo(
                         property: property,
@@ -114,10 +130,7 @@ class PropertyDetailPage extends StatelessWidget {
                                 margin: const EdgeInsets.all(16),
                               );
 
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (_) => MyTripPage()),
-                              );
+                              Get.off(() => MyTripPage());
                             } else {
                               Get.defaultDialog(
                                 title: 'Perlu Login',

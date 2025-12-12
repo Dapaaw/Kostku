@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // Import Wajib
 import '/config/theme.dart';
 
 class PropertyCard extends StatelessWidget {
@@ -48,24 +49,42 @@ class PropertyCard extends StatelessWidget {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(8),
                 ),
-                child: Image.network(
-                  imageUrl,
+                // --- PERUBAHAN: CachedNetworkImage ---
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   width: 200,
                   height: 120,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 200,
-                      height: 120,
-                      color: klookSoftGray,
-                      child: Icon(
-                        Icons.image,
-                        size: 40,
-                        color: klookGray,
+
+                  // OPTIMASI: Resize gambar di memori agar hemat RAM
+                  memCacheWidth: 600,
+
+                  // Loading State
+                  placeholder: (context, url) => Container(
+                    width: 200,
+                    height: 120,
+                    color: klookSoftGray,
+                    child: const Center(
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: klookOrange,
+                        ),
                       ),
-                    );
-                  },
+                    ),
+                  ),
+
+                  // Error State
+                  errorWidget: (context, url, error) => Container(
+                    width: 200,
+                    height: 120,
+                    color: klookSoftGray,
+                    child: Icon(Icons.broken_image, size: 40, color: klookGray),
+                  ),
                 ),
+                // -------------------------------------
               ),
               Positioned(
                 top: 8,
@@ -116,11 +135,7 @@ class PropertyCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(
-                      Icons.location_on,
-                      size: 12,
-                      color: klookGray,
-                    ),
+                    const Icon(Icons.location_on, size: 12, color: klookGray),
                     const SizedBox(width: 4),
                     Expanded(
                       child: Text(

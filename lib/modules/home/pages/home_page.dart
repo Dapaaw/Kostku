@@ -13,88 +13,89 @@ import '/modules/home/widgets/top_properties_list.dart';
 import '/modules/home/widgets/nearby_properties_list.dart';
 import '/modules/home/pages/price_list_page.dart';
 import '/routes/app_routes.dart';
-import 'package:get/get.dart' as getx;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // Inisialisasi Controller
     final selectedIndex = 0.obs;
     final FavoriteController favController = Get.find<FavoriteController>();
+    // Gunakan put agar controller dibuat
     final KosController kosController = Get.put(KosController());
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: GetBuilder<FavoriteController>(
-        init: favController,
-        builder: (favController) {
-          return GetBuilder<KosController>(
-            init: kosController,
-            builder: (kosController) {
-              return Obx(() {
-                if (kosController.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
-                }
 
-                if (kosController.errorMessage.value.isNotEmpty) {
-                  return ErrorStateWidget(
-                    errorMessage: kosController.errorMessage.value,
-                    onRetry: () => kosController.fetchKosFromApi(),
-                  );
-                }
-                return SafeArea(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        HomeHeader(),
-                        SearchAndFilterSection(
-                          onSeeAllPressed: () {
-                            final List<KosModel> filteredProperties =
-                                kosController.filteredTopProperties;
+      // Gunakan Obx di root body untuk handle Loading & Error Global
+      body: Obx(() {
+        // 1. Cek Loading
+        if (kosController.isLoading.value) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-                            getx.Get.to(
-                              () => const PriceListPage(),
-                              arguments: {
-                                'title': 'Semua Kos',
-                                'kos_list': filteredProperties,
-                              },
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        TopPropertiesList(
-                          properties: kosController.filteredTopProperties,
-                          favoriteController: favController,
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        TopNearbyHeader(
-                          locations: kosController.locations,
-                          selectedLocation: kosController.selectedLocation,
-                          onLocationChanged: (String? newValue) {
-                            kosController.updateLocation(newValue);
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        
-                        NearbyPropertiesList(
-                          properties: kosController.filteredNearbyProperties,
-                          favoriteController: favController,
-                        ),
-                        const SizedBox(height: 100),
-                      ],
-                    ),
-                  ),
-                );
-              });
-            },
+        // 2. Cek Error Message
+        if (kosController.errorMessage.value.isNotEmpty) {
+          return ErrorStateWidget(
+            errorMessage: kosController.errorMessage.value,
+            onRetry: () => kosController.fetchKosFromApi(),
           );
-        },
-      ),
+        }
+
+        // 3. Render Data jika Sukses
+        return SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                HomeHeader(), // Pastikan const jika widget statis
+
+                SearchAndFilterSection(
+                  onSeeAllPressed: () {
+                    final List<KosModel> filteredProperties =
+                        kosController.filteredTopProperties;
+
+                    Get.to(
+                      () => const PriceListPage(),
+                      arguments: {
+                        'title': 'Semua Kos',
+                        'kos_list': filteredProperties,
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // List Top Properties
+                TopPropertiesList(
+                  properties: kosController.filteredTopProperties,
+                  favoriteController: favController,
+                ),
+
+                const SizedBox(height: 20),
+
+                TopNearbyHeader(
+                  locations: kosController.locations,
+                  selectedLocation: kosController.selectedLocation,
+                  onLocationChanged: (String? newValue) {
+                    kosController.updateLocation(newValue);
+                  },
+                ),
+                const SizedBox(height: 16),
+
+                // List Nearby Properties (Perbaikan Love ada di dalam file widget ini)
+                NearbyPropertiesList(
+                  properties: kosController.filteredNearbyProperties,
+                  favoriteController: favController,
+                ),
+                const SizedBox(height: 100),
+              ],
+            ),
+          ),
+        );
+      }),
+
       bottomNavigationBar: Obx(() {
         return BottomNavBar(
           selectedIndex: selectedIndex.value,
@@ -102,11 +103,11 @@ class HomePage extends StatelessWidget {
             selectedIndex.value = index;
             if (index == 0) return;
             if (index == 1) {
-              getx.Get.offNamed(AppRoutes.myTrip);
+              Get.offNamed(AppRoutes.myTrip);
             } else if (index == 2) {
-              getx.Get.offNamed(AppRoutes.favorite);
+              Get.offNamed(AppRoutes.favorite);
             } else if (index == 3) {
-              getx.Get.offNamed(AppRoutes.profile);
+              Get.offNamed(AppRoutes.profile);
             }
           },
         );

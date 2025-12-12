@@ -18,6 +18,27 @@ class TopPropertiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // --- PERBAIKAN LOGIKA EMPTY STATE ---
+    // Cek di sini, SEBELUM membuat ListView
+    if (properties.isEmpty) {
+      return const SizedBox(
+        height: 230,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.search_off, size: 40, color: Colors.grey),
+              SizedBox(height: 8),
+              Text(
+                'Tidak ada kos di kategori ini.',
+                style: TextStyle(color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
       height: 230,
       child: ListView.builder(
@@ -25,38 +46,32 @@ class TopPropertiesList extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: properties.length,
         itemBuilder: (context, index) {
-          if (properties.isEmpty) {
-            return Container(
-              width: 200,
-              alignment: Alignment.center,
-              child: const Text(
-                'Tidak ada kos di harga ini.',
-                style: TextStyle(color: Colors.grey),
+          final kos = properties[index];
+
+          // Tetap gunakan Obx agar love merah berfungsi
+          return Obx(() {
+            return InkWell(
+              onTap: () {
+                Get.to(() => PropertyDetailPage(property: kos));
+              },
+              child: Container(
+                margin: EdgeInsets.only(
+                  right: index == properties.length - 1 ? 0 : 14,
+                ),
+                child: PropertyCard(
+                  propertyId: kos.id.toString(),
+                  imageUrl: kos.imageUrl,
+                  title: kos.name,
+                  location: kos.location,
+                  price: "${currencyFormatter.format(kos.price)} / bulan",
+                  rating: kos.rating,
+                  isFavorite: favoriteController.isFavorite(kos.id),
+                  onFavoriteToggle: () =>
+                      favoriteController.toggleFavorite(kos),
+                ),
               ),
             );
-          }
-
-          final kos = properties[index];
-          return InkWell(
-            onTap: () {
-              Get.to(() => PropertyDetailPage(property: kos));
-            },
-            child: Container(
-              margin: EdgeInsets.only(
-                right: index == properties.length - 1 ? 0 : 14,
-              ),
-              child: PropertyCard(
-                propertyId: kos.id.toString(),
-                imageUrl: kos.imageUrl,
-                title: kos.name,
-                location: kos.location,
-                price: "${currencyFormatter.format(kos.price)} / bulan",
-                rating: kos.rating,
-                isFavorite: favoriteController.isFavorite(kos.id),
-                onFavoriteToggle: () => favoriteController.toggleFavorite(kos),
-              ),
-            ),
-          );
+          });
         },
       ),
     );

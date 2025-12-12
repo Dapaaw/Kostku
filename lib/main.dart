@@ -5,12 +5,14 @@ import 'package:kos/data/models/auth_controller.dart';
 import '/config/theme.dart';
 import '/routes/app_routes.dart';
 import '/data/models/favorite_controller.dart';
+import '/data/models/my_kos_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   Get.put(AuthController(), permanent: true);
   Get.put(FavoriteController(), permanent: true);
+  Get.put(MyKosController(), permanent: true);
 
   runApp(const MyApp());
 }

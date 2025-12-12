@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart'; // Import ini wajib
 import '/config/theme.dart';
 
 class NearbyPropertyCard extends StatelessWidget {
@@ -45,24 +46,43 @@ class NearbyPropertyCard extends StatelessWidget {
                 borderRadius: const BorderRadius.horizontal(
                   left: Radius.circular(8),
                 ),
-                child: Image.network(
-                  imageUrl,
+                // --- PERUBAHAN: Pakai CachedNetworkImage ---
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
                   width: 120,
                   height: 100,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      width: 120,
-                      height: 100,
-                      color: klookSoftGray,
-                      child: Icon(
-                        Icons.image,
-                        size: 30,
-                        color: klookGray,
-                      ),
-                    );
-                  },
+                  
+                  // OPTIMASI: Kecilkan ukuran di memori karena card ini kecil
+                  memCacheWidth: 350, 
+                  
+                  // Tampilan saat loading
+                  placeholder: (context, url) => Container(
+                    width: 120,
+                    height: 100,
+                    color: klookSoftGray,
+                    child: const Center(
+                      child: SizedBox(
+                        width: 20, 
+                        height: 20, 
+                        child: CircularProgressIndicator(strokeWidth: 2, color: klookOrange)
+                      )
+                    ),
+                  ),
+                  
+                  // Tampilan saat error
+                  errorWidget: (context, url, error) => Container(
+                    width: 120,
+                    height: 100,
+                    color: klookSoftGray,
+                    child: Icon(
+                      Icons.broken_image, // Ganti icon biar lebih jelas kalau rusak
+                      size: 30,
+                      color: klookGray,
+                    ),
+                  ),
                 ),
+                // -------------------------------------------
               ),
               Positioned(
                 top: 8,

@@ -35,6 +35,9 @@ class SearchAndFilterSection extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: TextField(
+                    // 1. Sambungkan Controller disini agar teks tidak hilang saat reload
+                    controller: controller.searchController,
+
                     onChanged: (value) {
                       controller.updateSearchQuery(value);
                     },
@@ -105,7 +108,7 @@ class SearchAndFilterSection extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 8),  
+        const SizedBox(height: 8),
         SizedBox(
           height: 36,
           child: GetBuilder<KosController>(
@@ -127,18 +130,14 @@ class SearchAndFilterSection extends StatelessWidget {
                         backgroundColor: isSelected
                             ? klookOrange
                             : Colors.white,
-                        foregroundColor: isSelected
-                            ? Colors.white
-                            : klookBlack,
+                        foregroundColor: isSelected ? Colors.white : klookBlack,
                         elevation: isSelected ? 2 : 0,
                         shadowColor: Colors.black.withValues(alpha: 0.1),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                           side: BorderSide(
-                            color: isSelected
-                                ? klookOrange
-                                : klookSoftGray,
+                            color: isSelected ? klookOrange : klookSoftGray,
                             width: 1,
                           ),
                         ),

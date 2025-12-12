@@ -20,10 +20,7 @@ class NearbyPropertiesList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (properties.isEmpty) {
       return const Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 16.0,
-          vertical: 20.0,
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
         child: Center(
           child: Text(
             'Tidak ada kos ditemukan di lokasi ini.',
@@ -40,24 +37,34 @@ class NearbyPropertiesList extends StatelessWidget {
       itemCount: properties.length,
       itemBuilder: (context, index) {
         final kos = properties[index];
-        return InkWell(
-          onTap: () {
-            Get.to(() => PropertyDetailPage(property: kos));
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 12.0),
-            child: NearbyPropertyCard(
-              propertyId: kos.id.toString(),
-              imageUrl: kos.imageUrl,
-              title: kos.name,
-              location: kos.location,
-              price: "${currencyFormatter.format(kos.price)} / bulan",
-              rating: kos.rating,
-              isFavorite: favoriteController.isFavorite(kos.id),
-              onFavoriteToggle: () => favoriteController.toggleFavorite(kos),
+
+        // --- PERBAIKAN: BUNGKUS DENGAN OBX ---
+        // Obx akan membuat widget ini "mendengarkan" perubahan di favoriteController.
+        // Begitu tombol ditekan, ikon akan langsung berubah merah/putih.
+        return Obx(() {
+          return InkWell(
+            onTap: () {
+              Get.to(() => PropertyDetailPage(property: kos));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: NearbyPropertyCard(
+                propertyId: kos.id.toString(),
+                imageUrl: kos.imageUrl,
+                title: kos.name,
+                location: kos.location,
+                price: "${currencyFormatter.format(kos.price)} / bulan",
+                rating: kos.rating,
+
+                // Karena dibungkus Obx, baris ini sekarang menjadi Reactive (Real-time)
+                isFavorite: favoriteController.isFavorite(kos.id),
+
+                onFavoriteToggle: () => favoriteController.toggleFavorite(kos),
+              ),
             ),
-          ),
-        );
+          );
+        });
+        // -------------------------------------
       },
     );
   }

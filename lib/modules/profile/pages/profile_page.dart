@@ -26,6 +26,7 @@ class ProfilePage extends StatelessWidget {
       await prefs.remove('token');
       await prefs.remove('userName');
       await prefs.remove('userEmail');
+      // Reset data auth biar nama jadi 'Guest' lagi
       Get.find<AuthController>().loadInitialData();
       Get.offAllNamed(AppRoutes.login);
     }
@@ -39,15 +40,52 @@ class ProfilePage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            CircleAvatar(
-              radius: 50,
-              backgroundImage: const AssetImage('assets/images/profile.jpg'),
-              backgroundColor: klookSoftGray,
-            ),
-            const SizedBox(height: 16),
+            // --- PERUBAHAN DISINI (GAMBAR DINAMIS) ---
+            // Kita bungkus dengan Obx agar saat nama berubah (login/logout),
+            // gambar avatar juga ikut berubah (Generate ulang)
             Obx(() {
+              // Kita ambil nama user sebagai 'seed' (bibit) generator gambar
+              // Kalau spasi diganti + biar URL aman
+              final String seed = authController.userName.value.replaceAll(
+                ' ',
+                '+',
+              );
+
+              // URL API Avatar (Pilih salah satu style di bawah):
+              // Style 1 (Kartun Manusia Keren): 'https://api.dicebear.com/9.x/avataaars/png?seed=$seed'
+              // Style 2 (Robot Lucu): 'https://robohash.org/$seed?set=set1'
+              // Style 3 (Kucing): 'https://robohash.org/$seed?set=set4'
+
+              final String avatarUrl =
+                  'https://api.dicebear.com/9.x/avataaars/png?seed=$seed&backgroundColor=ffdfbf';
+
               return Column(
                 children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: klookOrange,
+                        width: 2,
+                      ), // Hiasan border
+                    ),
+                    child: CircleAvatar(
+                      radius: 50,
+                      backgroundColor: klookSoftGray,
+                      // Gunakan NetworkImage untuk ambil dari internet
+                      backgroundImage: NetworkImage(avatarUrl),
+                      onBackgroundImageError: (exception, stackTrace) {
+                        // Handler jika internet mati/gambar gagal load
+                        debugPrint("Gagal load avatar: $exception");
+                      },
+                      child: const Icon(
+                        Icons.person,
+                        size: 50,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   Text(
                     authController.userName.value,
                     style: const TextStyle(
@@ -65,6 +103,7 @@ class ProfilePage extends StatelessWidget {
               );
             }),
 
+            // -----------------------------------------
             const SizedBox(height: 24),
             Container(
               decoration: BoxDecoration(
@@ -90,14 +129,12 @@ class ProfilePage extends StatelessWidget {
                     leading: const Icon(Icons.shield),
                     title: const Text("Privacy and Sharing"),
                     trailing: const Icon(Icons.chevron_right, size: 16),
-
                     onTap: () {},
                   ),
                   ListTile(
                     leading: const Icon(Icons.notifications),
                     title: const Text("Notifications"),
                     trailing: const Icon(Icons.chevron_right, size: 16),
-
                     onTap: () {},
                   ),
                   ListTile(
@@ -111,10 +148,7 @@ class ProfilePage extends StatelessWidget {
                       return Column(
                         children: [
                           ListTile(
-                            leading: const Icon(
-                              Icons.edit,
-                              color: klookOrange,
-                            ),
+                            leading: const Icon(Icons.edit, color: klookOrange),
                             title: const Text(
                               "Edit Profile",
                               style: TextStyle(color: klookOrange),
@@ -138,10 +172,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           const Divider(height: 1, indent: 16, endIndent: 16),
                           ListTile(
-                            leading: const Icon(
-                              Icons.lock,
-                              color: klookOrange,
-                            ),
+                            leading: const Icon(Icons.lock, color: klookOrange),
                             title: const Text(
                               "Change Password",
                               style: TextStyle(color: klookOrange),
